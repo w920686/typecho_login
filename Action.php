@@ -687,7 +687,6 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
       </div><h2>页面加载中...</h2>
     </div>
     <script>  
-    alert("'.$from.'");
         setTimeout(function(){
             top.location = "'.$from.'";
         }, 1000);
