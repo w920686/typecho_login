@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- App favicon -->
-        <link rel="shortcut icon" href="https://cdn.gmit.vip/favicon.ico">
-        <link rel="apple-touch-icon" href="https://cdn.gmit.vip/favicon.ico">
-        <link rel="icon" href="https://cdn.gmit.vip/favicon.ico">
+        <link rel="shortcut icon" href="<?php print $this->plugin->ico ?>">
+        <link rel="apple-touch-icon" href="<?php print $this->plugin->ico ?>">
+        <link rel="icon" href="<?php print $this->plugin->ico ?>">
         <!-- App css -->
         <!-- build:css -->
         <link href="<?php print $this->dir ?>/assets/css/app.min.css" rel="stylesheet" type="text/css" />

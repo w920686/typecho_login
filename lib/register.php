@@ -5,9 +5,9 @@
         <title>账号注册 - <?php print trim(Helper::options()->title)?></title>
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
         <!-- App favicon -->
-        <link rel="shortcut icon" href="https://cdn.gmit.vip/favicon.ico">
-        <link rel="apple-touch-icon" href="https://cdn.gmit.vip/favicon.ico">
-        <link rel="icon" href="https://cdn.gmit.vip/favicon.ico">
+        <link rel="shortcut icon" href="<?php print $this->plugin->ico ?>">
+        <link rel="apple-touch-icon" href="<?php print $this->plugin->ico ?>">
+        <link rel="icon" href="<?php print $this->plugin->ico ?>">
         <!-- App css -->
         <!-- build:css -->
         <link href="<?php print $this->dir ?>/assets/css/app.min.css" rel="stylesheet" type="text/css" />
