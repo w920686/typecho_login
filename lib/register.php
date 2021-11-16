@@ -28,7 +28,7 @@
                             <!-- Logo-->
                             <div class="card-header  text-center" style="color:#FFF">
                                 <a href="/">
-                                    <span><img src="https://cdn.gmit.vip/logo.png" alt="" height="50"></span>
+                                    <span><img src="<?php print $this->plugin->logo ?>" alt="" height="50"></span>
                                 </a>
                             </div>
 
@@ -83,7 +83,7 @@
 
                         <div class="row mt-3">
                             <div class="col-12 text-center">
-                                <p class="text-muted">已有账号? <a href="./login" class="text-dark ml-1"><b>登陆</b></a></p>
+                                <p class="text-muted">已有账号? <a href="./login?from=<?php print urlencode($_GET['from'])?>" class="text-dark ml-1"><b>登陆</b></a></p>
                             </div> <!-- end col-->
                         </div>
                         <!-- end row -->
@@ -96,7 +96,7 @@
         </div>
         <!-- end page -->
         <footer class="footer footer-alt">
-            2021 © GM
+        <?php print date("Y")?> © <?php print trim(Helper::options()->title)?>
         </footer>
         <!-- App js -->
         <script src="<?php print $this->dir ?>/assets/javascript/app.min.js"></script>
@@ -105,6 +105,7 @@
         <?php }?>
         <script>
             !function (t) {
+                let from = '<?php print $_GET['from']?>';
                 let btn = function(obj,msg,code){
                     if(code == true){
                         obj.html('<i class="mdi mdi-loading mdi-spin"></i> '+msg+' ');
@@ -261,7 +262,7 @@
                             if(res.code == 1){
                                 t.NotificationApp.send("注册提示", "注册成功", "top-right", "rgba(0,0,0,0.2)", "success");
                                 setTimeout(function(){
-                                    window.location.href = document.referrer ? document.referrer : "<?php print Typecho_Common::url('/', Helper::options()->index) ?>";
+                                    window.location.href = from ? from : "<?php print Typecho_Common::url('/', Helper::options()->index) ?>";
                                 }, 1500);
                             }else{
                                 t.NotificationApp.send("注册提示", res.msg, "top-right", "rgba(0,0,0,0.2)", "warning");

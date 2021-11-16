@@ -6,12 +6,13 @@ define('__PLUGIN_ROOT__', __DIR__);
  * 
  * @package GmLogin
  * @author Gm
- * @version 1.0
- * @update: 2021-11-9
+ * @version 1.1
+ * @update: 2021-11-17
  * @link //www.gmit.vip
  */
 class GmLogin_Plugin implements Typecho_Plugin_Interface
 {
+    public static $panel = 'GmLogin/console.php';
     /**
      * 激活插件方法,如果激活失败,直接抛出异常
      * 
@@ -21,11 +22,35 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
      */
     public static function activate()
     {
+        Helper::addPanel(1, self::$panel, _t('快捷登录绑定'), _t('账号快捷登录绑定'), 'subscriber');
         Helper::addRoute('Gm_login', '/user/login', 'GmLogin_Action', 'login');
         Helper::addRoute('Gm_register', '/user/register', 'GmLogin_Action', 'register');
         Helper::addRoute('Gm_forget', '/user/forget', 'GmLogin_Action', 'forget');
         Helper::addRoute('Gm_api', '/user/api', 'GmLogin_Action', 'api');
-        return '插件安装成功!';
+        Helper::addRoute('Gm_callback', '/user/callback', 'GmLogin_Action', 'callback');
+        Helper::addRoute('Gm_bangding', '/user/bangding', 'GmLogin_Action', 'bangding');
+        Helper::addRoute('Gm_new', '/user/new', 'GmLogin_Action', 'new');
+        try {
+            $db = Typecho_Db::get();
+            $prefix = $db->getPrefix();
+            $sql = "CREATE TABLE IF NOT EXISTS `{$prefix}gm_oauth` (
+              `id` int(255) NOT NULL,
+              `app` text NOT NULL,
+              `uid` int(255) NOT NULL,
+              `openid` text NOT NULL,
+              `time` text NOT NULL
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+            ALTER TABLE `{$prefix}gm_oauth`
+              ADD PRIMARY KEY (`id`);
+            ALTER TABLE `{$prefix}gm_oauth`
+              MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;";
+            $db->query($sql);
+            return '插件安装成功!数据库安装成功';
+        } catch (Typecho_Db_Exception $e) {
+            if ('42S01' == $e->getCode()) {
+                return '插件安装成功!数据库已存在!';
+            }
+        }
     }
     
     /**
@@ -37,10 +62,14 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
      * @throws Typecho_Plugin_Exception
      */
     public static function deactivate(){
+        Helper::removePanel(1, self::$panel);
         Helper::removeRoute('Gm_login');
         Helper::removeRoute('Gm_register');
         Helper::removeRoute('Gm_forget');
         Helper::removeRoute('Gm_api');
+        Helper::removeRoute('Gm_callback');
+        Helper::removeRoute('Gm_bangding');
+        Helper::removeRoute('Gm_new');
         return '插件卸载成功';
     }
     
@@ -56,6 +85,8 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
         $title = new Typecho_Widget_Helper_Layout('div', array('class=' => 'typecho-page-title'));
         $title->html('<h2>功能开关</h2>');
         $form->addItem($title);
+        $logo = new Typecho_Widget_Helper_Form_Element_Text('logo', null, 'https://cdn.gmit.vip/logo.png', _t('logo地址'), '登录注册界面的logo链接');
+        $form->addInput($logo);
         $register = new Typecho_Widget_Helper_Form_Element_Radio('register', array('1' => _t('开启'), '0' => _t('关闭')), '1',_t('注册'), _t('是否开启注册功能 访问地址 <a target="_blank" href="'.Typecho_Common::url('user/register', Helper::options()->index).'">'.Typecho_Common::url('user/register', Helper::options()->index).'</a>'));
             $form->addInput($register);
         $login = new Typecho_Widget_Helper_Form_Element_Radio('login', array('1' => _t('开启'), '0' => _t('关闭')), '1', _t('登陆'),_t('是否开启登陆功能 访问地址 <a target="_blank" href="'.Typecho_Common::url('user/login', Helper::options()->index).'">'.Typecho_Common::url('user/login', Helper::options()->index).'</a>'));
@@ -66,11 +97,8 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
         $title->html('<h2>第三方登陆</h2>');
         $form->addItem($title);
         $title = new Typecho_Widget_Helper_Layout('div', array('class=' => 'typecho-page-title'));
-        $oauth = new Typecho_Widget_Helper_Form_Element_Radio('oauth', array('1' => _t('开启'), '0' => _t('关闭')), '0', _t('第三方登陆按钮'),_t('此第三方登陆免申请开发者应用，无需配置开发者应用 了解详细:<a target="_blank" href="https://auth.gmit.vip/">https://auth.gmit.vip/</a><br/>此功能需要配合typecho_Oauth插件使用，否则无效 插件下载：<a href="https://github.com/AIYMC/typecho_Oauth" target="_blank">GitHub</a> <a href="https://gitee.com/isgm/typecho_Oauth" target="_blank">Gitee</a>'));
-        $title->html('登陆功能管理 <a href="'.Typecho_Widget::widget('Widget_Options')->adminUrl.'options-plugin.php?config=GmOauth" target="_blank">点我前往</a>');
-        $form->addItem($title);
-        $title = new Typecho_Widget_Helper_Layout('div', array('class=' => 'typecho-page-title'));
-            $form->addInput($oauth);
+        $oauth = new Typecho_Widget_Helper_Form_Element_Radio('oauth', array('1' => _t('开启'), '0' => _t('关闭')), '0', _t('第三方登陆'),_t('此第三方登陆免申请开发者应用，无需配置开发者应用 了解详细:<a target="_blank" href="https://auth.gmit.vip/">https://auth.gmit.vip/</a>'));
+        $form->addInput($oauth);
         $iconfile = __PLUGIN_ROOT__."/icon.json";
         $icon = @fopen($iconfile, "r") or die("登陆按钮图标文件丢失!");
         $site = json_decode(fread($icon,filesize($iconfile)),true);
@@ -140,15 +168,20 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
     
     public static function url($action)
     {
+        $sys_protocal = isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://';
+        $php_self = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
+        $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+        $relate_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $php_self.(isset($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : $path_info);
+        $url = urlencode($sys_protocal.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '').$relate_url);
         switch ($action) {
             case 'register':
-                echo Typecho_Common::url('user/register', Helper::options()->index);
+                print Typecho_Common::url('user/register', Helper::options()->index).'?from='.$url;
                 break;
             case 'login':
-                echo Typecho_Common::url('user/login', Helper::options()->index);
+                print Typecho_Common::url('user/login', Helper::options()->index).'?from='.$url;
                 break;
             case 'forget':
-                echo Typecho_Common::url('user/forget', Helper::options()->index);
+                print Typecho_Common::url('user/forget', Helper::options()->index).'?from='.$url;
                 break;
         }
     }

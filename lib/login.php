@@ -116,7 +116,7 @@
                             <!-- Logo -->
                             <div class="card-header  text-center" style="color:#FFF">
                                 <a href="/">
-                                    <span><img src="https://cdn.gmit.vip/logo.png" alt="" height="50"></span>
+                                    <span><img src="<?php print $this->plugin->logo ?>" alt="" height="50"></span>
                                 </a>
                             </div>
 
@@ -133,7 +133,7 @@
 
                                 <div class="form-group mb-3">
                                     <label class="float-left" for="password">密码</label>
-                                    <a href="./forget" class="text-muted float-right"><small>忘记密码?</small></a>
+                                    <a href="./forget?from=<?php print urlencode($_GET['from'])?>" class="text-muted float-right"><small>忘记密码?</small></a>
                                     <input class="form-control" type="password" id="password" placeholder="输入密码">
                                 </div>
                                 <?php if($this->plugin->gt == 1 && $this->plugin->gtid && $this->plugin->gtkey) {?>
@@ -204,7 +204,7 @@
 
                         <div class="row mt-3">
                             <div class="col-12 text-center">
-                                <p class="text-muted">没有账号吗? <a href="./register" class="text-dark ml-1"><b>注册</b></a></p>
+                                <p class="text-muted">没有账号吗? <a href="./register?from=<?php print urlencode($_GET['from'])?>" class="text-dark ml-1"><b>注册</b></a></p>
                             </div> 
                             <!-- end col -->
                         </div>
@@ -218,7 +218,7 @@
         </div>
         <!-- end page -->
         <footer class="footer footer-alt">
-            2021 © GM
+        <?php print date("Y")?> © <?php print trim(Helper::options()->title)?>
         </footer>
         <!-- App js -->
         <script src="<?php print $this->dir ?>/assets/javascript/app.min.js"></script>
@@ -226,6 +226,7 @@
         <script src="<?php print $this->dir ?>/assets/javascript/gt.js"></script>
         <?php }?>
         <script>
+            let from = '<?php print $_GET['from']?>';
             !function (t) {
                 let btn = function(obj,msg,code){
                     if(code == true){
@@ -297,7 +298,7 @@
                             if(res.code == 1){
                                 t.NotificationApp.send("登录提示", "登录成功", "top-right", "rgba(0,0,0,0.2)", "success");
                                 setTimeout(function(){
-                                    window.location.href = document.referrer ? document.referrer : "<?php print Typecho_Common::url('/', Helper::options()->index) ?>";
+                                    window.location.href = from ? from : "<?php print Typecho_Common::url('/', Helper::options()->index) ?>";
                                 }, 1500);
                             }else{
                                 t.NotificationApp.send("登录提示", res.msg, "top-right", "rgba(0,0,0,0.2)", "warning");
@@ -332,8 +333,42 @@
                 });
                 <?php }?>
             }(window.jQuery)
+            let OpenUrl = function(url,iWidth,iHeight){
+                let iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+                let iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+                let open = window.open(url, '_blank', 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',status=no,toolbar=no,menubar=no,location=no,resizable=no,scrollbars=0,titlebar=no');
+                if(!open){
+                    window.location.href = url;
+                }
+            }
             function GetUrl(site){
-                window.location.href = "<?php print Typecho_Common::url('/GmOauth', Helper::options()->index) ?>?site="+site;
+                $.ajax({
+                    url: '<?php print Typecho_Common::url('user/api', Helper::options()->index)?>',
+                    type: 'post',
+                    dataType: 'json',
+                    async: true, 
+                    data: {
+                        action : 'url',
+                        site : site,
+                        from : from ? from : '<?php print Typecho_Common::url('/', Helper::options()->index) ?>'
+                    },
+                    beforeSend:function(){
+                        
+                    }, 
+                    complete:function(){
+                        
+                    },
+                    error: function(){
+                    
+                    }, 
+                    success: function (res) {
+                        if(res.code == 1){
+                            OpenUrl(res.url,res.width,res.height);
+                        }else{
+
+                        }
+                    }
+                });
             }
         </script>
     </body>
