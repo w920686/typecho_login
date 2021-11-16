@@ -661,7 +661,8 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
     }
 
     protected function Ok(){
-        if(!$_SESSION['from']){
+        $from = urldecode($_SESSION['from']);
+        if(!$from){
             $from = Typecho_Common::url('/', Helper::options()->index);
         }
         print '
@@ -686,6 +687,7 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
       </div><h2>页面加载中...</h2>
     </div>
     <script>  
+    alert("'.$from.'");
         setTimeout(function(){
             top.location = "'.$from.'";
         }, 1000);

@@ -87,6 +87,8 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
         $form->addItem($title);
         $logo = new Typecho_Widget_Helper_Form_Element_Text('logo', null, 'https://cdn.gmit.vip/logo.png', _t('logo地址'), '登录注册界面的logo链接');
         $form->addInput($logo);
+        $ico = new Typecho_Widget_Helper_Form_Element_Text('ico', null, 'https://cdn.gmit.vip/ico.png', _t('ico地址'), '登录注册界面的ico链接');
+        $form->addInput($ico);
         $register = new Typecho_Widget_Helper_Form_Element_Radio('register', array('1' => _t('开启'), '0' => _t('关闭')), '1',_t('注册'), _t('是否开启注册功能 访问地址 <a target="_blank" href="'.Typecho_Common::url('user/register', Helper::options()->index).'">'.Typecho_Common::url('user/register', Helper::options()->index).'</a>'));
             $form->addInput($register);
         $login = new Typecho_Widget_Helper_Form_Element_Radio('login', array('1' => _t('开启'), '0' => _t('关闭')), '1', _t('登陆'),_t('是否开启登陆功能 访问地址 <a target="_blank" href="'.Typecho_Common::url('user/login', Helper::options()->index).'">'.Typecho_Common::url('user/login', Helper::options()->index).'</a>'));
