@@ -39,7 +39,7 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
   `uid` int(255) NOT NULL,
   `openid` text NOT NULL,
   `time` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 ALTER TABLE `{$prefix}gm_oauth` CHANGE `id` `id` INT(100) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);";
             $db->query($sql);
             return '插件安装成功!数据库安装成功';
