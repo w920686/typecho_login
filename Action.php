@@ -628,6 +628,15 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
         }
     }
 
+    //用户名生成
+    private function UserName(){
+        $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        $UserName = "";
+        for ( $i = 0; $i < 6; $i++ ){
+            $UserName .= @$chars[mt_rand(0, strlen($chars))];
+        }
+        return strtoupper(base_convert(time() - 1420070400, 10, 36)).$UserName;
+    }
     //及验获取
     protected function geetest($user_id = '',$state = 0,$geetest_challenge = '', $geetest_validate = '',$geetest_seccode = ''){
         require __PLUGIN_ROOT__.'/lib/Geetest/class.geetestlib.php'; //及验
