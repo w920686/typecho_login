@@ -1,8 +1,10 @@
 # typecho_Oauth
 typecho登陆注册插件支持免申请第三方应用
+目前支持的快捷登录：
+钉钉  QQ 百度 gitee码云 github 微博 华为 Gitlab 阿里云 支付宝 小米 开源中国 领英 微信 企业微信 微软 飞书 钉钉V2
 
 # 演示站
-https://blog.gmit.vip/
+https://www.gmit.vip/
 
 
 # 使用方法
@@ -14,6 +16,8 @@ https://blog.gmit.vip/
     <?php GmLogin_Plugin::url('login'); //输出登陆url ?>
     <?php GmLogin_Plugin::url('register'); //输出注册url ?>
     <?php GmLogin_Plugin::url('forget'); //输出找回密码url ?>
+    <?php GmLogin_Plugin::oauth(); //单独输出快捷登录按钮 ?>
+    
 
 
 # 支持第三方登陆
@@ -35,11 +39,19 @@ https://blog.gmit.vip/
 15. 企业微信
 16. 微软
 17. 飞书
+18. 钉钉V2
 
 会陆续新增其他站点的支持
 
 
 # 版本
+v1.1.1
+1. 快捷登录完善信息
+2. 快捷登录绑定已有账号
+3. 快捷登录注册并绑定新账号
+4. 新增钉钉官方V2.0登录
+5. 修改快捷登录失败提示信息页面
+
 v1.1
 1. 修复来源链接获取失败跳转到首页bug
 2. 把集成登录写到一个插件 无需typecho_Oauth插件即可开启第三方登录

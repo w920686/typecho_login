@@ -194,6 +194,10 @@
                                             if($site[$i]['site'] == 'weixins') {
                                                 continue;
                                             }
+                                            $name = $site[$i]['site'];
+                                            if(@!$this->plugin->$name){
+                                                continue;
+                                            }
                                             $html .= '<button type="button" onclick="GetUrl(\''.$site[$i]['site'].'\')" class="btn btn-icon btn-light" style="border-radius: 0;margin-left:0px;"> '.$site[$i]['ico'].' </button>';
                                         }
                                         ?>

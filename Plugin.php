@@ -6,7 +6,7 @@ define('__PLUGIN_ROOT__', __DIR__);
  * 
  * @package GmLogin
  * @author Gm
- * @version 1.1
+ * @version 1.1.1
  * @update: 2021-11-17
  * @link //www.gmit.vip
  */
@@ -23,6 +23,8 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
     public static function activate()
     {
         Helper::addPanel(1, self::$panel, _t('快捷登录绑定'), _t('账号快捷登录绑定'), 'subscriber');
+        Typecho_Plugin::factory('Widget_Archive')->header = array(__CLASS__, 'header');
+        Typecho_Plugin::factory('Widget_Archive')->footer = array(__CLASS__, 'footer');
         Helper::addRoute('Gm_login', '/user/login', 'GmLogin_Action', 'login');
         Helper::addRoute('Gm_register', '/user/register', 'GmLogin_Action', 'register');
         Helper::addRoute('Gm_forget', '/user/forget', 'GmLogin_Action', 'forget');
@@ -152,20 +154,103 @@ ALTER TABLE `{$prefix}gm_oauth` CHANGE `id` `id` INT(100) NOT NULL AUTO_INCREMEN
      *为header添加css文件
      * @return void
      */
-    /*public static function header()
+    public static function header()
     {
-        
-    }*/
+        print <<<HTML
+<style>
+    .icon{
+        margin-top: 5px; 
+    }
+</style>
+HTML;
+    }
     
         /**
      *为footer添加js文件
      * @return void
      */
-    /*public static function footer(){
-        
-    }*/
+    public static function footer(){
+        $api = Typecho_Common::url('user/api', Helper::options()->index);
+        if(!Typecho_Widget::widget('Widget_User')->hasLogin()){
+        print <<<HTML
+<script>
+    function GetOauthUrl(site){
+        let xhr = new XMLHttpRequest();
+        xhr.open('post', '{$api}');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                let res = JSON.parse(xhr.responseText);
+                if(res.code == 1){
+                    let height = res.height;
+                    let width = res.width;
+                    let url = res.url;
+                    let iTop = (window.screen.availHeight - 30 - height) / 2;
+                    let iLeft = (window.screen.availWidth - 10 - width) / 2;
+                    let open = window.open(url, '_blank', 'height=' + height + ',innerHeight=' + height + ',width=' + width + ',innerWidth=' + width + ',top=' + iTop + ',left=' + iLeft + ',status=no,toolbar=no,menubar=no,location=no,resizable=no,scrollbars=0,titlebar=no');
+                    if(!open){
+                        window.location.href = url;
+                    }
+                }else{
+                    
+                }
+            }
+        }
+        let from = encodeURIComponent(window.location.href);
+        xhr.send('action=url&site='+site+'&from='+from);
+    }
+    function GetOauthIcon(){
+        let obj = '#OauthIcon';
+        if(window.OauthIconData){
+            let ico = window.OauthIconData;
+            let html = '';
+            for(let i = 0; i < ico.length; i++){
+                html += '<a onclick="GetOauthUrl(\''+ico[i].site+'\')" class="btn btn-rounded btn-sm btn-icon btn-default" data-toggle="tooltip" data-placement="bottom" data-original-title="'+ico[i].name+'账号登陆">'+ico[i].ico+'</a>';
+            }
+            document.querySelectorAll(obj).forEach(e => {
+                e.innerHTML = html;
+            });
+            console.log('第三方登录按钮加载完成');
+            return;
+        }
+        let xhr = new XMLHttpRequest();
+        xhr.open('post', '{$api}');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                let res = JSON.parse(xhr.responseText);
+                if(res.code == 1){
+                    window.OauthIconData = res.data;
+                    let html = '';
+                    for(let i = 0; i < res.data.length; i++){
+                        html += '<a onclick="GetOauthUrl(\''+res.data[i].site+'\')" class="btn btn-rounded btn-sm btn-icon btn-default" data-toggle="tooltip" data-placement="bottom" data-original-title="'+res.data[i].name+'账号登陆">'+res.data[i].ico+'</a>';
+                    }
+                    document.querySelectorAll(obj).forEach(e => {
+                        e.innerHTML = html;
+                    });
+                    console.log('第三方登录按钮加载完成');
+                }else{
+                    console.log('第三方登录按钮加载失败');
+                }
+            }
+        }
+        let from = encodeURIComponent(window.location.href);
+        xhr.send('action=icon');
+    }GetOauthIcon();
+</script>
+HTML;
+        }else{
+            print <<<HTML
+<script>
+    function GetOauthIcon(){
+        console.log('已登录');
+    }
+</script>
+HTML;
+        }
+    }
     
-    public static function url($action)
+    public static function url($action, $param = NULL)
     {
         $sys_protocal = isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://';
         $php_self = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
@@ -174,14 +259,36 @@ ALTER TABLE `{$prefix}gm_oauth` CHANGE `id` `id` INT(100) NOT NULL AUTO_INCREMEN
         $url = urlencode($sys_protocal.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '').$relate_url);
         switch ($action) {
             case 'register':
-                print Typecho_Common::url('user/register', Helper::options()->index).'?from='.$url;
+                $url = Typecho_Common::url('user/register', Helper::options()->index).'?from='.$url;
                 break;
             case 'login':
-                print Typecho_Common::url('user/login', Helper::options()->index).'?from='.$url;
+                $url = Typecho_Common::url('user/login', Helper::options()->index).'?from='.$url;
                 break;
             case 'forget':
-                print Typecho_Common::url('user/forget', Helper::options()->index).'?from='.$url;
+                $url = Typecho_Common::url('user/forget', Helper::options()->index).'?from='.$url;
                 break;
+        }
+        if($param){
+            return $url;
+        }else{
+            print $url;
+        }
+    }
+
+    public static function oauth(){
+        $login = self::url('login',1);
+        $register = self::url('register',1);
+        if(!Typecho_Widget::widget('Widget_User')->hasLogin()){
+            print <<<HTML
+<div class="row text-center" style="margin-top:10px;">
+    <p class="text-muted letterspacing indexWords">第三方登陆</p>
+</div>
+<div class="row text-center" style="margin-top:-5px;" id="OauthIcon"><p class="infinite-scroll-request"><i class="animate-spin fontello fontello-refresh"></i>Loading...</p></div>
+<p id="social-buttons" style="display: flex;margin-top: 8px;justify-content: center;">
+    <a no-pjax href="{$login}" class="btn btn-rounded btn-sm btn-info"><i class="fa fa-fw fa-key"></i> 登录</a>&nbsp;&nbsp;
+    <a no-pjax href="{$register}" class="btn btn-rounded btn-sm btn-danger"><i class="fa fa-fw fa-user"></i> 注册+</a>
+</p>
+HTML;
         }
     }
 }

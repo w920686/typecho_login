@@ -41,7 +41,7 @@
 
                                 <div class="form-group mb-3">
                                     <label>昵称(用于显示)</label>
-                                    <input class="form-control" type="text" id="nickname" placeholder="输入用户名">
+                                    <input class="form-control" type="text" id="nickname" placeholder="输入昵称">
                                 </div>
 
                                 <div class="form-group mb-3">
