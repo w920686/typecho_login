@@ -681,8 +681,8 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
                     $hashValidate = Typecho_Common::hashValidate($password, $result[0]['password']);
                 }
                 if($hashValidate){
-                    $IsUser = $db->fetchAll($db->select()->from('table.gm_oauth')->where('uid = ?',$result[0]['uid'])->where('app = ?',1));
-                    if(!count($IsUser)) $this->json([
+                    $IsUser = $db->fetchAll($db->select()->from('table.gm_oauth')->where('uid = ?',$result[0]['uid'])->where('app = ?',$app));
+                    if(count($IsUser)) $this->json([
                         'code' => 0,
                         'msg' => '该账号被其它快捷授权账号绑定'
                     ]);
