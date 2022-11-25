@@ -6,7 +6,7 @@ define('__PLUGIN_ROOT__', __DIR__);
  * 
  * @package GmLogin
  * @author Gm
- * @version 1.1.1
+ * @version 1.1.2
  * @update: 2021-11-17
  * @link //www.gmit.vip
  */
