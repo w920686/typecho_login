@@ -166,9 +166,11 @@
                                     <?php 
                                     if($this->plugin->oauth){
                                     $iconfile = __PLUGIN_ROOT__."/icon.json";
-                                    $icon = @fopen($iconfile, "r") or die("登陆按钮图标文件丢失!");
-                                    $site = json_decode(fread($icon,filesize($iconfile)),true);
-                                    fclose($icon);
+                                    if (!file_exists($iconfile)) {
+                                        exit('图标文件不存在，请检查插件目录是否有icon.json文件');
+                                    }
+                                    $str = file_get_contents($iconfile);
+                                    $site = json_decode($str,true);
                                     if($this->plugin->qq){
                                     for ($i = 0; $i < count($site); $i++) {
                                         if($site[$i]['site'] == 'qq') {
