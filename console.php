@@ -18,9 +18,11 @@ include 'menu.php';
     $db = Typecho_Db::get();
     Typecho_Widget::widget('Widget_User')->to($user);
     $iconfile = __PLUGIN_ROOT__."/icon.json";
-    $icon = @fopen($iconfile, "r") or die("登陆按钮图标文件丢失!");
-    $site = json_decode(fread($icon,filesize($iconfile)),true);
-    fclose($icon);
+    if (!file_exists($iconfile)) {
+        exit('图标文件不存在，请检查插件目录是否有icon.json文件');
+    }
+    $str = file_get_contents($iconfile);
+    $site = json_decode($str,true);
     $plugin = Typecho_Widget::widget('Widget_Options')->plugin('GmLogin');
     $arr = [];
     for ($i = 0; $i < count($site); $i++) {
