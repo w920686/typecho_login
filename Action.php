@@ -409,9 +409,14 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
                 if($site){
                     if($this->plugin->$site){
                         $iconfile = __PLUGIN_ROOT__."/icon.json";
-                        $icon = @fopen($iconfile, "r") or die("登陆按钮图标文件丢失!");
-                        $arr = json_decode(fread($icon,filesize($iconfile)),true);
-                        fclose($icon);
+                        if (!file_exists($iconfile)) {
+                            $this->json([
+                                'code' => 0,
+                                'msg' => '图标文件不存在，请检查插件目录是否有icon.json文件',
+                            ]);
+                        }
+                        $str = file_get_contents($iconfile);
+                        $arr = json_decode($str,true);
                         $Is = false;
                         $num = null;
                         for ($i = 0; $i < count($arr); $i++) {
@@ -452,9 +457,14 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
                 break;
             case 'icon':
                 $iconfile = __PLUGIN_ROOT__."/icon.json";
-                $icon = @fopen($iconfile, "r") or die("登陆按钮图标文件丢失!");
-                $site = json_decode(fread($icon,filesize($iconfile)),true);
-                fclose($icon);
+                if (!file_exists($iconfile)) {
+                    $this->json([
+                        'code' => 0,
+                        'msg' => '图标文件不存在，请检查插件目录是否有icon.json文件',
+                    ]);
+                }
+                $str = file_get_contents($iconfile);
+                $site = json_decode($str,true);
                 $data = [];
                 for ($i = 0; $i < count($site); $i++) {
                     $c = $site[$i]['site'];
