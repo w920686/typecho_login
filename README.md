@@ -1,7 +1,7 @@
 # typecho_Oauth
 typecho登陆注册插件支持免申请第三方应用
 目前支持的快捷登录：
-QQ 微博 百度 钉钉 钉钉V2版本 Gitee码云 Github 华为 Gitlab 阿里云 支付宝 小米 开源中国 领英 微信 企业微信 飞书 微软 coding Google	google
+QQ 微博 百度 钉钉 钉钉V2版本 Gitee码云 Github 华为 Gitlab 阿里云 支付宝 小米 开源中国 领英 微信 企业微信 飞书 微软 coding Google
 
 # 演示站
 https://www.gumengya.com/
