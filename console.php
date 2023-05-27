@@ -46,7 +46,7 @@ include 'menu.php';
     if($_GET['add']){
         $a = $_GET['add'];
         if($plugin->$a){
-            $response->redirect('https://sso.gmit.vip/'.$a.'/redirect?redirect_url='.Typecho_Common::url('user/bangding', Helper::options()->index));
+            $response->redirect('https://sso.gumengya.com/'.$a.'/redirect?redirect_url='.Typecho_Common::url('user/bangding', Helper::options()->index));
         }else{
             throw new Typecho_Exception(_t('未开通此第三方登陆'));
         }

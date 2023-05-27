@@ -76,7 +76,7 @@
                                 <div class="form-group mb-0 text-center">
                                     <button class="btn btn-light" id="register"> 注册 </button>
                                 </div>
-                                
+                                <p class="text-muted text-center mt-3">注册即代表您同意<a target="_blank" href="/protocol.html">《用户服务协议》《隐私协议》</a></p>
                             </div> <!-- end card-body -->
                         </div>
                         <!-- end card -->

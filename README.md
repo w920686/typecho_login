@@ -1,10 +1,10 @@
 # typecho_Oauth
 typecho登陆注册插件支持免申请第三方应用
 目前支持的快捷登录：
-钉钉  QQ 百度 gitee码云 github 微博 华为 Gitlab 阿里云 支付宝 小米 开源中国 领英 微信 企业微信 微软 飞书 钉钉V2
+QQ 微博 百度 钉钉 钉钉V2版本 Gitee码云 Github 华为 Gitlab 阿里云 支付宝 小米 开源中国 领英 微信 企业微信 飞书 微软 coding Google	google
 
 # 演示站
-https://www.gmit.vip/
+https://www.gumengya.com/
 
 
 # 使用方法
@@ -41,15 +41,18 @@ https://www.gmit.vip/
 17. 飞书
 18. 钉钉V2
 19. coding
+20. Google
 
 会陆续新增其他站点的支持
 
 
 # 版本
-v1.1.2
-1. 修复图片可能不存在报错问题
-2. 新增CODING登录
-3. 修复首次快捷登录绑定账号判断问题
+v1.2
+1. 修复已知BUG
+2. 修复不存在用户登录时注册失败问题
+3. 新增coding登录
+4. 新增Google登录
+5. 修复原版本接口失效问题(原来版本已经无法使用)
 
 v1.1.1
 1. 快捷登录完善信息

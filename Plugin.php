@@ -6,9 +6,9 @@ define('__PLUGIN_ROOT__', __DIR__);
  * 
  * @package GmLogin
  * @author Gm
- * @version 1.1.2
- * @update: 2021-11-17
- * @link //www.gmit.vip
+ * @version 1.2
+ * @update: 2023-5-27
+ * @link //www.gumengya.com
  */
 class GmLogin_Plugin implements Typecho_Plugin_Interface
 {
@@ -36,13 +36,13 @@ class GmLogin_Plugin implements Typecho_Plugin_Interface
             $db = Typecho_Db::get();
             $prefix = $db->getPrefix();
             $sql = "CREATE TABLE `{$prefix}gm_oauth` (
-  `id` int(100) NOT NULL,
-  `app` text NOT NULL,
-  `uid` int(255) NOT NULL,
-  `openid` text NOT NULL,
-  `time` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
-ALTER TABLE `{$prefix}gm_oauth` CHANGE `id` `id` INT(100) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);";
+  `id` INT(255) NOT NULL AUTO_INCREMENT,
+  `app` TEXT NOT NULL,
+  `uid` INT(255) NOT NULL,
+  `openid` TEXT NOT NULL,
+  `time` TEXT NOT NULL,
+  PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8mb4;";
             $db->query($sql);
             return '插件安装成功!数据库安装成功';
         } catch (Typecho_Db_Exception $e) {
@@ -84,9 +84,9 @@ ALTER TABLE `{$prefix}gm_oauth` CHANGE `id` `id` INT(100) NOT NULL AUTO_INCREMEN
         $title = new Typecho_Widget_Helper_Layout('div', array('class=' => 'typecho-page-title'));
         $title->html('<h2>功能开关</h2>');
         $form->addItem($title);
-        $logo = new Typecho_Widget_Helper_Form_Element_Text('logo', null, 'https://cdn.gmit.vip/logo.png', _t('logo地址'), '登录注册界面的logo链接');
+        $logo = new Typecho_Widget_Helper_Form_Element_Text('logo', null, 'https://img.gumengya.com/logo.png', _t('logo地址'), '登录注册界面的logo链接');
         $form->addInput($logo);
-        $ico = new Typecho_Widget_Helper_Form_Element_Text('ico', null, 'https://cdn.gmit.vip/ico.png', _t('ico地址'), '登录注册界面的ico链接');
+        $ico = new Typecho_Widget_Helper_Form_Element_Text('ico', null, 'https://img.gumengya.com/ico.png', _t('ico地址'), '登录注册界面的ico链接');
         $form->addInput($ico);
         $register = new Typecho_Widget_Helper_Form_Element_Radio('register', array('1' => _t('开启'), '0' => _t('关闭')), '1',_t('注册'), _t('是否开启注册功能 访问地址 <a target="_blank" href="'.Typecho_Common::url('user/register', Helper::options()->index).'">'.Typecho_Common::url('user/register', Helper::options()->index).'</a>'));
             $form->addInput($register);
@@ -98,7 +98,7 @@ ALTER TABLE `{$prefix}gm_oauth` CHANGE `id` `id` INT(100) NOT NULL AUTO_INCREMEN
         $title->html('<h2>第三方登陆</h2>');
         $form->addItem($title);
         $title = new Typecho_Widget_Helper_Layout('div', array('class=' => 'typecho-page-title'));
-        $oauth = new Typecho_Widget_Helper_Form_Element_Radio('oauth', array('1' => _t('开启'), '0' => _t('关闭')), '0', _t('第三方登陆'),_t('此第三方登陆免申请开发者应用，无需配置开发者应用 了解详细:<a target="_blank" href="https://auth.gmit.vip/">https://auth.gmit.vip/</a>'));
+        $oauth = new Typecho_Widget_Helper_Form_Element_Radio('oauth', array('1' => _t('开启'), '0' => _t('关闭')), '0', _t('第三方登陆'),_t('此第三方登陆免申请开发者应用，无需配置开发者应用 了解详细:<a target="_blank" href="https://auth.gumengya.com/">https://auth.gumengya.com/</a>'));
         $form->addInput($oauth);
         $iconfile = __PLUGIN_ROOT__."/icon.json";
         $icon = @fopen($iconfile, "r") or die("登陆按钮图标文件丢失!");
@@ -288,6 +288,7 @@ HTML;
     <a no-pjax href="{$login}" class="btn btn-rounded btn-sm btn-info"><i class="fa fa-fw fa-key"></i> 登录</a>&nbsp;&nbsp;
     <a no-pjax href="{$register}" class="btn btn-rounded btn-sm btn-danger"><i class="fa fa-fw fa-user"></i> 注册+</a>
 </p>
+<p class="text-muted text-center mt-3">登录即代表您同意<a style="color: #aaa!important;" target="_blank" href="/protocol.html">《用户服务协议》《隐私协议》</a></p>
 HTML;
         }
     }

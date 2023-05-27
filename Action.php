@@ -56,6 +56,24 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
             case 'code' :
                 $this->geetest($_POST['info']);
                 break;
+            case 'verification':
+                if($this->plugin->gt == 1 && $this->plugin->gtid && $this->plugin->gtkey){
+                    $geetest_challenge = $_POST['geetest_challenge'];
+                    $geetest_validate = $_POST['geetest_validate'];
+                    $geetest_seccode = $_POST['geetest_seccode'];
+                    if(!$this->geetest($_POST['info'],1,$geetest_challenge,$geetest_validate,$geetest_seccode)){
+                        $this->json([
+                            'code' => 0,
+                            'msg' => '未验证或验证失效'
+                        ]);
+                    }else{
+                        $this->json([
+                            'code' => 1,
+                            'msg' => '验证通过'
+                        ]);
+                    }
+                }
+                break;
             case 'login':
                 $username = $_POST['username'];
                 $password = $_POST['password'];
@@ -432,7 +450,7 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
                             $this->json([
                                 'code' => 1,
                                 'msg' => 'success',
-                                'url' => 'https://sso.gmit.vip/'.$site.'/redirect?redirect_url='.$callback,
+                                'url' => 'https://sso.gumengya.com/'.$site.'/redirect?redirect_url='.$callback,
                                 'width' => $arr[$num]['width'],
                                 'height' => $arr[$num]['height'],
                             ]);
@@ -734,7 +752,7 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
             Typecho_Widget::widget('Widget_User')->to($user);
             Typecho_Widget::widget('Widget_Options')->to($options);
             $curl = curl_init();
-        	curl_setopt($curl, CURLOPT_URL, 'https://sso.gmit.vip/api');
+        	curl_setopt($curl, CURLOPT_URL, 'https://sso.gumengya.com/api');
         	curl_setopt($curl, CURLOPT_HEADER, 0);
         	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         	curl_setopt($curl, CURLOPT_POST, 1);
@@ -782,7 +800,7 @@ class GmLogin_Action extends Typecho_Widget implements Widget_Interface_Do
         $code = @$_GET['code'];
         if($code){
             $curl = curl_init();
-        	curl_setopt($curl, CURLOPT_URL, 'https://sso.gmit.vip/api');
+        	curl_setopt($curl, CURLOPT_URL, 'https://sso.gumengya.com/api');
         	curl_setopt($curl, CURLOPT_HEADER, 0);
         	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         	curl_setopt($curl, CURLOPT_POST, 1);
